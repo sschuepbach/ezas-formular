@@ -18,29 +18,15 @@ export class EditRecordComponent {
   @Output() currentId = new EventEmitter<string>();
 
   constructor(private fb: FormBuilder, private dR: DocumentRetrieverService, private dS: DocumentSenderService) {
-    this.createForm();
     dR.documents.subscribe(d => this.setValues(d[0]));
   }
 
-  private createForm() {
-    this.ezasForm = this.fb.group({
-      quelle: this.fb.array([]),
-      quellname: this.fb.array([]),
-      ausgabe: this.fb.array([]),
-      quellseite: this.fb.array([]),
-      quelldatum: this.fb.array([]),
-      titel: this.fb.array([])
-    });
-  }
-
-
   private setValues(document: EzasResult) {
+    this.ezasForm = this.fb.group({});
     for (const fieldname of Object.keys(document)) {
       if (fieldname !== 'id') {
+        this.ezasForm.addControl(fieldname, this.fb.array([]));
         for (const fieldvalue of document[fieldname]) {
-          if (this.elementAsFormArray(fieldname).length > 0) {
-            this.elementAsFormArray(fieldname).removeAt(0);
-          }
           this.elementAsFormArray(fieldname).push(new FormControl(fieldvalue));
         }
       } else {
