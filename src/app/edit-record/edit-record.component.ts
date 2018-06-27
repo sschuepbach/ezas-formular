@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {EzasResult} from '../ezas-result';
 import {DocumentRetrieverService} from '../document-retriever.service';
@@ -9,9 +9,10 @@ import {DocumentSenderService} from '../document-sender.service';
   templateUrl: './edit-record.component.html',
   styleUrls: ['./edit-record.component.css']
 })
-export class EditRecordComponent implements OnInit {
+export class EditRecordComponent {
 
   ezasForm: FormGroup;
+  saved = false;
   private index = 0;
   private id: string;
   @Output() currentId = new EventEmitter<string>();
@@ -19,9 +20,6 @@ export class EditRecordComponent implements OnInit {
   constructor(private fb: FormBuilder, private dR: DocumentRetrieverService, private dS: DocumentSenderService) {
     this.createForm();
     dR.documents.subscribe(d => this.setValues(d[0]));
-  }
-
-  ngOnInit() {
   }
 
   private createForm() {
@@ -71,17 +69,19 @@ export class EditRecordComponent implements OnInit {
   forward() {
     this.index += 1;
     this.dR.get(this.index);
+    this.saved = false;
   }
 
   back() {
     if (this.index > 0) {
       this.index -= 1;
       this.dR.get(this.index);
+      this.saved = false;
     }
   }
 
   save() {
-    this.dS.save(this.id, this.ezasForm.getRawValue()).subscribe(x => console.log(x));
+    this.dS.save(this.id, this.ezasForm.getRawValue()).subscribe(() => this.saved = true);
   }
 
 }

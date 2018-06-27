@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../environments/environment';
 import {EzasResult} from './ezas-result';
-import {catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -36,13 +35,6 @@ export class DocumentSenderService {
     return this.http.post(
       `${environment.api}document/${id}/_update`,
       DocumentSenderService.createPartialUpdateBody(doc),
-      this.httpOptions
-    )
-      .pipe(
-        catchError(x => {
-          console.log(x);
-          return x;
-        })
-      );
+      this.httpOptions);
   }
 }

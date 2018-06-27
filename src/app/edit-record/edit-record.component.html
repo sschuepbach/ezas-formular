@@ -13,7 +13,7 @@
       </ul>
     </div>
     <button (click)="back()"><</button>
-    <button (click)="save()">Save</button>
+    <button (click)="save()" [disabled]="saved">{{saved ? 'Saved!' : 'Save'}}</button>
     <button (click)="forward()">></button>
   </form>
 </div>
