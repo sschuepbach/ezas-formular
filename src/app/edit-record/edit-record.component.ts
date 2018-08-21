@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Output} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {EzasResult} from '../ezas-result';
-import {DocumentRetrieverService} from '../document-retriever.service';
-import {DocumentSenderService} from '../document-sender.service';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { EzasResult } from '../ezas-result';
+import { DocumentRetrieverService } from '../document-retriever.service';
+import { DocumentSenderService } from '../document-sender.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-edit-record',
@@ -16,9 +17,17 @@ export class EditRecordComponent {
   private index = 0;
   private id: string;
   @Output() currentId = new EventEmitter<string>();
+  connectionError: boolean;
 
   constructor(private fb: FormBuilder, private dR: DocumentRetrieverService, private dS: DocumentSenderService) {
-    dR.documents.subscribe(d => this.setValues(d[0]));
+    dR.documents.subscribe(d => {
+      if (d instanceof HttpErrorResponse) {
+        this.connectionError = true;
+      } else {
+        this.connectionError = false;
+        this.setValues(d[0]);
+      }
+    });
   }
 
   private setValues(document: EzasResult) {

@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../environments/environment';
-import {EzasResult} from './ezas-result';
-import {Subject} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../environments/environment';
+import { EzasResult } from './ezas-result';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import {Subject} from 'rxjs';
 export class DocumentRetrieverService {
 
   private size = 1;
-  documents = new Subject<EzasResult[]>();
+  documents = new Subject<EzasResult[] | HttpErrorResponse >();
   private offset = 0;
 
   private static extractDocuments(res: any): EzasResult[] {
@@ -38,7 +38,8 @@ export class DocumentRetrieverService {
   private retrieve(from: number, size: number): void {
     this.http
       .get(`${environment.api}_search?from=${from}&size=${size}`)
-      .subscribe(res => this.documents.next(DocumentRetrieverService.extractDocuments(res)));
+      .subscribe(res => this.documents.next(DocumentRetrieverService.extractDocuments(res)),
+        err => this.documents.next(err) );
   }
 
 

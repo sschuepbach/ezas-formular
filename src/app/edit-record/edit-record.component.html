@@ -1,3 +1,6 @@
+<div *ngIf="connectionError" style="color:red">
+  Verbindung zum Backend fehlgeschlagen!
+</div>
 <ng-container *ngIf="ezasForm">
   <div style="float:left;">
     <form [formGroup]="ezasForm">
